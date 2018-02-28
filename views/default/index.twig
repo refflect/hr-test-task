@@ -1,0 +1,76 @@
+{% extends "layout.twig" %}
+
+{% block main %}
+
+    {% if paginator.totalCnt > paginator.perPage %}
+    <div class="pagination">
+        <div class="page_button page_prev">
+        {% if paginator.currentPage != 1 %}
+            <a href="{{ paginator.link }}{{ paginator.currentPage -1 }}"><<</a>
+        {% endif %}
+        </div>
+
+        <div class="page_button">{{ paginator.currentPage }}/{{ paginator.pageCnt }}</div>
+
+        <div class="page_button page_next">
+        {% if paginator.currentPage < paginator.pageCnt %}
+            <a href="{{ paginator.link }}{{ paginator.currentPage + 1 }}">>></a>
+        {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="users-container">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>Должность</th>
+                <th>Статус</th>
+                <th>Дата приема</th>
+            </tr>
+            {% for user in users %}
+            <tr class="row">
+                <td data-name="id" data-val="{{ user.id }}">{{ user.id }}</td>
+                <td data-name="name" data-val="{{ user.name }}">{{ user.name }}</td>
+                <td data-name="position" data-val="{{ user.pos_id }}">{{ user.pos_name }}</td>
+                {%  if user.status %}
+                <td data-name="status" data-val="{{ user.status }}">Работает</td>
+                <td data-name="startdate" data-val="{{ user.start_date }}">{{ user.start_date }}</td>
+                {% else %}
+                    <td data-name="status" data-val="{{ user.status }}">Уволен</td>
+                    <td></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="tab-conteiner">
+        <div class="tab js-tab_add">Добавить</div>
+        <div class="tab js-tab_update" title="Выберите пользователя в списке сверху">Обновить</div>
+    </div>
+
+    <div id="users_editor" class="users-editor hidden">
+        <input type="hidden" id="user_id" name="id" value=""/>
+        <label for="user_name">ФИО</label>
+        <input type="text" id="user_name" name="name" value=""/><br />
+        <label for="user_position">Должность</label>
+        <select id="user_position" name="position" value="">
+            {% for position in positions %}
+            <option value="{{ position.id }}">{{ position.name }}</option>
+            {% endfor %}
+        </select><br />
+        <label for="user_status">Статус</label>
+        <input type="checkbox" id="user_status" name="status" value=""/><br />
+        <label for="user_startdate">Дата приема</label>
+        <input type="date" id="user_startdate" name="startdate" value="{{ "now"|date("Y-m-d") }}"/><br />
+        <input type="submit" id="btn_user_save" onclick="saveUser()" value="Сохранить">
+        <input type="submit" id="btn_user_delete" class="hidden" onclick="deleteUser()" value="Удалить">
+    </div>
+
+{% endblock %}
+
+
+
+
